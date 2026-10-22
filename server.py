@@ -18,6 +18,21 @@ if not BOT_TOKEN:
     raise RuntimeError("BOT_TOKEN environment variable is required")
 
 app = Flask(__name__)
+
+@app.after_request
+def add_cors_headers(response):
+    origin = request.headers.get("Origin", "")
+    allowed = "https://mamillamolla-beep.github.io"
+    if origin == allowed:
+        response.headers["Access-Control-Allow-Origin"] = allowed
+        response.headers["Vary"] = "Origin"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-Telegram-Init-Data"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return response
+
+@app.route("/api/<path:unused>", methods=["OPTIONS"])
+def api_preflight(unused):
+    return ("", 204)
 def connect_db():
     db = sqlite3.connect(DB_FILE, timeout=20)
     db.row_factory = sqlite3.Row
