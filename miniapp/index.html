@@ -130,6 +130,22 @@ footer{text-align:center;color:#858795;font-size:11px;margin-top:25px}
 <div class="stat"><small>የተጠሩ ቁጥሮች</small><strong id="calledCount">0 / 75</strong><small>የጨዋታ መረጃ</small></div>
 </div>
 
+<section id="selectionTimer" style="margin:16px 0;padding:16px;border:1px solid #f5c451;border-radius:14px;background:#15161b;text-align:center">
+  <div style="color:#f5c451;font-weight:bold">⏳ የካርድ ምርጫ ጊዜ</div>
+  <strong id="timerSeconds" style="display:block;font-size:32px;color:#fff;margin:8px 0">30</strong>
+  <div id="timerMessage" style="color:#c9c9c9">ካርድህን ለመምረጥ ጊዜ አለህ</div>
+</section>
+
+<section id="cardPoolSection" class="panel" style="margin:16px 0;padding:16px;border:1px solid #f5c451;border-radius:14px;background:#15161b">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+    <h2 style="color:#f5c451;margin:0">🃏 ካርድህን ምረጥ</h2>
+    <span id="poolCount" style="color:#ddd">50 ካርዶች</span>
+  </div>
+  <p style="color:#c9c9c9;margin:10px 0">የተዘጋ ካርድ ንካ። እስከ 2 ካርዶች መምረጥ ትችላለህ። እያንዳንዱ 10 ክሬዲት ነው።</p>
+  <div id="cardPool" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(82px,1fr));gap:10px"></div>
+  <div id="poolMessage" role="status" style="color:#f5c451;margin-top:12px"></div>
+</section>
+
 <div class="section-title"><h2>የቁጥር ሰሌዳ</h2><span>B • I • N • G • O</span></div>
 
 <div class="game-layout">
@@ -227,6 +243,36 @@ for(let row=0;row<15;row++){
   const [me,game]=await Promise.all([api('/api/me'),api('/api/game')]);
   balanceEl.textContent=me.balance;
   drawNumbers(game.called||[]);
+
+  const timerSeconds=document.getElementById('timerSeconds');
+  const timerMessage=document.getElementById('timerMessage');
+  const seconds=Number(game.selection_seconds||0);
+  if(game.active && game.buy_until){
+   window.selectionDeadline=Number(game.buy_until)*1000;
+  }else{
+   window.selectionDeadline=null;
+  }
+
+  const remaining=game.active && window.selectionDeadline
+   ? Math.max(0,Math.ceil((window.selectionDeadline-Date.now())/1000))
+   : 0;
+
+  if(timerSeconds && timerMessage){
+   if(game.active && remaining>0){
+    timerSeconds.textContent=remaining;
+    timerMessage.textContent='ካርድህን ለመምረጥ ጊዜ አለህ';
+    buyBtn.disabled=false;
+   }else if(game.active){
+    timerSeconds.textContent='0';
+    timerMessage.textContent='የካርድ ምርጫ ጊዜ አብቅቷል።';
+    buyBtn.disabled=true;
+   }else{
+    timerSeconds.textContent='—';
+    timerMessage.textContent='አዲስ ጨዋታ እስኪጀምር ይጠብቁ።';
+    buyBtn.disabled=true;
+   }
+  }
+
   if(game.winner_id)pill.textContent='🏆 WINNER: '+(game.winner_name||'Player');
   else if(game.active)pill.textContent='🟢 GAME LIVE';
   else pill.textContent='⏳ WAITING';
@@ -263,6 +309,64 @@ for(let row=0;row<15;row++){
   section.style.display='block';
  }
 
+
+ async function loadCardPool(){
+  const area=document.getElementById('cardPool');
+  const message=document.getElementById('poolMessage');
+  const count=document.getElementById('poolCount');
+  if(!area)return;
+
+  try{
+   const data=await api('/api/card-pool');
+   area.replaceChildren();
+   const cards=data.cards||[];
+   const available=cards.filter(c=>c.available).length;
+   if(count)count.textContent=available+' ክፍት / '+cards.length;
+
+   for(const item of cards){
+    const b=document.createElement('button');
+    b.type='button';
+    b.style.cssText='min-height:82px;border:1px solid #f5c451;border-radius:12px;background:'+
+      (item.mine?'#3b3014':item.available?'linear-gradient(145deg,#24252b,#090a0d)':'#303036')+
+      ';color:#f5c451;font-weight:bold;padding:10px;cursor:pointer;';
+    b.textContent=item.mine?'✓ '+item.code:item.available?'✦ '+item.code:'🔒 '+item.code;
+    b.disabled=!data.active||Number(data.selection_seconds)<=0||(!item.available&&!item.mine);
+    b.setAttribute('aria-label',item.mine?'የእርስዎ '+item.code:item.available?'ካርድ '+item.code+' ምረጥ':'የተያዘ '+item.code);
+
+    if(item.available){
+     b.addEventListener('click',async()=>{
+      if(b.disabled)return;
+      b.disabled=true;
+      if(message)message.textContent=item.code+' በመመረጥ ላይ…';
+      try{
+       const result=await api('/api/card-pool/'+encodeURIComponent(item.code)+'/select',{method:'POST'});
+       balanceEl.textContent=result.balance;
+       const mine=await api('/api/cards');
+       showCards(mine.cards||[]);
+       if(message)message.textContent='✅ '+item.code+' ተመርጧል። ቀሪ ካርዶችህ፦ '+(2-result.cards_owned);
+       await loadCardPool();
+       await refresh();
+      }catch(e){
+       if(message)message.textContent='❌ '+e.message;
+       await loadCardPool();
+      }
+     });
+    }
+    area.appendChild(b);
+   }
+
+   if(!data.active){
+    if(message)message.textContent='አዲስ ጨዋታ እስኪጀምር ይጠብቁ።';
+   }else if(Number(data.selection_seconds)<=0){
+    if(message)message.textContent='⏳ የካርድ ምርጫ ጊዜ አብቅቷል።';
+   }else if(!message.textContent){
+    message.textContent='ክፍት ካርድ ንካ። እስከ 2 ካርዶች መምረጥ ትችላለህ።';
+   }
+  }catch(e){
+   if(message)message.textContent='የካርድ ዝርዝር መጫን አልተቻለም። '+e.message;
+  }
+ }
+
  function cardText(card,id){
   const letters=['B','I','N','G','O'];
   let out='🎟️ CARD #'+id+'\n'+letters.join('   ')+'\n';
@@ -272,16 +376,10 @@ for(let row=0;row<15;row++){
   return out;
  }
 
+ buyBtn.textContent='🃏 ከተዘጋጁ ካርዶች ምረጥ';
  buyBtn.addEventListener('click',async()=>{
-  buyBtn.disabled=true;
-  try{
-   const result=await api('/api/cards',{method:'POST'});
-   balanceEl.textContent=result.balance;
-   alert('✅ ካርድ ተገዝቷል!\n\n'+cardText(result.card,result.card_id));
-   showCards([{id:result.card_id,numbers:result.card}]);
-   await refresh();
-  }catch(e){alert('❌ '+e.message);}
-  finally{buyBtn.disabled=false;}
+  document.getElementById('cardPoolSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+  await loadCardPool();
  });
 
  cardsBtn.addEventListener('click',async()=>{
@@ -298,7 +396,20 @@ for(let row=0;row<15;row++){
 
  try{
   await refresh();
-  setInterval(async()=>{try{await refresh();}catch(e){console.error('Refresh failed:',e);}},5000);
+  await loadCardPool();
+  setInterval(()=>{
+    const timerSeconds=document.getElementById('timerSeconds');
+    if(timerSeconds && window.selectionDeadline){
+      const remaining=Math.max(0,Math.ceil((window.selectionDeadline-Date.now())/1000));
+      timerSeconds.textContent=remaining;
+    }
+  },1000);
+  setInterval(async()=>{
+   try{
+    await refresh();
+    await loadCardPool();
+   }catch(e){console.error('Refresh failed:',e);}
+  },5000);
  }catch(e){pill.textContent='CONNECTION ERROR';console.error(e);}
 })();
 </script>
