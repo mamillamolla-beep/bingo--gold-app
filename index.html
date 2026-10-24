@@ -2,214 +2,416 @@
 <html lang="am">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Bingo Gold</title>
 <style>
-:root{color-scheme:dark;--bg:#090a0d;--panel:#15161b;--gold:#f5c451;--muted:#a4a5ad;--line:#343039}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:system-ui,-apple-system,sans-serif}main{max-width:540px;margin:auto;padding:18px 14px 32px}main{max-width:980px;margin:auto;padding:18px 14px 32px}
-.game-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:14px;align-items:start}
-.column-labels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:6px}
-.column-labels div{text-align:center;border-radius:8px;padding:7px 2px;background:#242127;color:var(--gold);font-size:11px;font-weight:800}
-.number-grid{grid-template-rows:repeat(15,minmax(0,1fr));grid-auto-flow:row}
-.cards-column{min-width:0}
-.game-panel{min-width:0}
-.saved-card{margin-top:0;margin-bottom:12px}
-.saved-card:last-child{margin-bottom:0}
+:root{color-scheme:dark;--bg:#08090d;--panel:#151720;--gold:#f4c44e;--muted:#a5a8b5;--line:#343643}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#252016 0,#0b0c11 48%,#07080b 100%);color:#fff;font-family:system-ui,sans-serif}
+main{max-width:1050px;margin:auto;padding:16px 12px 30px}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:16px}
+.brand{font-size:clamp(18px,4vw,26px);font-weight:950;letter-spacing:1px;color:var(--gold)}
+.pill{border:1px solid #725c29;border-radius:30px;padding:8px 10px;color:var(--gold);font-size:11px;font-weight:800;text-align:center}
+.hero{padding:20px 16px;border:1px solid #5c4824;border-radius:20px;background:linear-gradient(120deg,#332817,#17161a 60%,#101117);box-shadow:0 8px 30px #0005}
+.eyebrow{color:var(--gold);font-size:11px;font-weight:900;letter-spacing:2px}
+h1{font-size:clamp(21px,5vw,32px);margin:8px 0}
+.sub{color:var(--muted);font-size:13px;line-height:1.7}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.stat{padding:13px;background:linear-gradient(145deg,#1c1d26,#111218);border:1px solid var(--line);border-radius:15px}
+.stat small{display:block;color:var(--muted);font-size:11px}
+.stat strong{display:block;color:var(--gold);font-size:25px;margin:5px 0}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:19px 2px 10px}
+.section-title h2{font-size:15px;margin:0}
+.section-title span{font-size:11px;color:var(--muted)}
+.game-layout{display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1.45fr) minmax(0,1fr);gap:8px;align-items:start}
+.game-panel,.cards-column{min-width:0}
+.game-panel{order:0}
+.cards-column{order:2}
+.game-panel .panel{padding:7px}
+.game-panel .section-title h2{font-size:12px}
+.column-labels,.number-grid{gap:3px}
+.column-labels div{font-size:10px;padding:5px 0}
+.number-grid button{font-size:clamp(9px,1.8vw,13px);border-radius:5px}
+#cardList{grid-template-columns:1fr;gap:8px}
+.saved-card{padding:5px}
+.saved-card h3{font-size:12px;margin:5px 0}
 .saved-card table{border-spacing:2px}
-.saved-card td{padding:6px 0}
-@media(max-width:650px){.game-layout{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)}.cards-column{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.saved-card{padding:7px}.saved-card h3{font-size:12px}.saved-card td{font-size:11px;padding:5px 0}.saved-card th{font-size:10px}}header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.brand{font-size:22px;font-weight:900;letter-spacing:2px;color:var(--gold)}.pill{border:1px solid #61502a;color:var(--gold);border-radius:20px;padding:7px 11px;font-size:12px}.hero{background:linear-gradient(135deg,#282116,#15130f 65%,#111);border:1px solid #5a4723;border-radius:20px;padding:20px;margin-bottom:14px}.eyebrow{color:var(--gold);font-size:12px;letter-spacing:1.5px}h1{font-size:25px;margin:7px 0}.sub{color:var(--muted);font-size:13px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.stat,.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:14px}.stat small{display:block;color:var(--muted);font-size:12px}.stat strong{display:block;color:var(--gold);font-size:22px;margin-top:5px}.section-title{display:flex;align-items:center;justify-content:space-between;margin:20px 2px 10px}.section-title h2{font-size:16px;margin:0}.section-title span{font-size:12px;color:var(--muted)}.bingo-head,.number-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.bingo-head div{text-align:center;color:var(--gold);font-weight:900;padding:8px 0}.number-grid button{background:#202127;color:#f5f5f6;border:1px solid #393a42;border-radius:9px;aspect-ratio:1;min-width:0;font-size:13px;font-weight:700}.number-grid button.called{background:var(--gold);color:#17120a;border-color:var(--gold)}.saved-card{margin-top:12px;padding:10px;background:#202127;border:1px solid #61502a;border-radius:12px}.saved-card h3{color:var(--gold);font-size:14px}.saved-card table{width:100%;table-layout:fixed;text-align:center;border-spacing:3px}.saved-card td{background:#303139;border-radius:5px;padding:7px 0;font-size:13px}.saved-card td.free{background:var(--gold);color:#17120a}.note{font-size:12px;line-height:1.6;color:var(--muted);margin:10px 2px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}button.action{border-radius:12px;padding:13px 8px;font-weight:800;font-size:14px;border:1px solid var(--gold);background:var(--gold);color:#17120a}button.secondary{background:#1a1b20;color:var(--gold)}footer{text-align:center;color:#777782;font-size:11px;margin-top:24px}
+.saved-card th{font-size:10px;padding:2px 0}
+.saved-card td{font-size:clamp(10px,1.5vw,14px);padding:5px 0}
+.called-display{padding:8px}
+.last-called{font-size:clamp(30px,5vw,54px)}
+.called-chip{min-width:28px;font-size:13px;padding:5px 3px}
+.actions{grid-template-columns:1fr}
+button.action{font-size:11px;padding:10px 3px}
+.panel{padding:11px;background:linear-gradient(145deg,#1b1c24,#111218);border:1px solid #38343a;border-radius:16px}
+.column-labels,.number-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.column-labels{margin-bottom:6px}
+.column-labels div{text-align:center;border-radius:7px;padding:7px 1px;font-size:11px;font-weight:900;color:#fff}
+.column-labels div:nth-child(1){background:#245caa}
+.column-labels div:nth-child(2){background:#9b3037}
+.column-labels div:nth-child(3){background:#21845d}
+.column-labels div:nth-child(4){background:#ad7a1d}
+.column-labels div:nth-child(5){background:#6540a0}
+.number-grid button{width:100%;min-width:0;aspect-ratio:1;background:#252731;color:#f4f4f7;border:1px solid #3b3d48;border-radius:7px;font-size:clamp(10px,2.2vw,14px);font-weight:800;padding:0}
+.number-grid button.called{background:linear-gradient(145deg,#ffe58a,#e8ac28);color:#201606;border-color:#fff0a5;box-shadow:0 0 9px #e8b73366}
+.note{font-size:11px;line-height:1.7;color:var(--muted)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+button.action{min-width:0;border-radius:11px;padding:13px 5px;font-size:13px;font-weight:900;border:1px solid var(--gold);background:linear-gradient(145deg,#ffdc75,#d99a20);color:#211705}
+button.secondary{background:#1c1d25;color:var(--gold);border-color:#6c5526}
+button:disabled{opacity:.55}
+#ownedCards{min-width:0}
+#cardList{display:grid;grid-template-columns:1fr;gap:9px}
+.saved-card{min-width:0;padding:9px;background:#20212a;border:1px solid #6c5526;border-radius:12px}
+.saved-card h3{color:var(--gold);font-size:13px;overflow-wrap:anywhere}
+.saved-card table{width:100%;table-layout:fixed;text-align:center;border-spacing:3px}
+.saved-card th{font-size:11px;color:var(--gold)}
+.saved-card td{background:#30323c;border-radius:5px;padding:6px 0;font-size:12px}
+.saved-card td.free{background:var(--gold);color:#17120a}
+footer{text-align:center;color:#858795;font-size:11px;margin-top:25px}
+@media(max-width:650px){
+ main{padding:8px 5px 18px}
+ header{margin-bottom:9px}
+ .hero{padding:12px 10px;border-radius:14px}
+ h1{font-size:20px}
+ .sub{font-size:11px}
+ .stats{gap:6px;margin:8px 0}
+ .stat{padding:8px}
+ .stat strong{font-size:20px}
+ .game-layout{grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr) minmax(0,1fr);gap:5px}
+ .game-panel .panel{padding:4px}
+ .cards-column .section-title{margin-top:10px}
+ .section-title{gap:3px;margin:10px 1px 6px}
+ .section-title h2{font-size:11px}
+ .section-title span{font-size:9px}
+ .panel{padding:5px}
+ .column-labels,.number-grid{gap:2px}
+ .column-labels div{font-size:9px;padding:4px 0}
+ .number-grid button{font-size:clamp(8px,2.1vw,12px);border-radius:4px}
+ .actions{gap:5px}
+ button.action{font-size:10px;padding:9px 2px;overflow-wrap:anywhere}
+ #cardList{gap:5px}
+ .saved-card{padding:3px;border-radius:8px}
+ .saved-card h3{font-size:10px;margin:4px 0}
+ .saved-card table{border-spacing:1px}
+ .saved-card th{font-size:9px;padding:2px 0}
+ .saved-card td{padding:4px 0;font-size:clamp(9px,2vw,12px);border-radius:3px}
+ .called-display{padding:6px;margin-top:8px}
+ .called-heading{font-size:10px}
+ .last-called{font-size:30px;margin:3px 0 7px}
+ .called-history{gap:3px}
+ .called-chip{min-width:20px;font-size:11px;padding:4px 2px}
+ footer{margin-top:12px}
+}
 
-/* Player card layout adjustment */
-.cards-column { min-width: 0; }
-#ownedCards { min-width: 0; }
-#cardList {
-  display: grid;
-  grid-template-columns: 1fr;
-}
-#cardList .saved-card {
-  min-width: 0;
-  margin: 0;
-  padding: 7px;
-}
-#cardList .saved-card h3 {
-  font-size: 12px;
-  overflow-wrap: anywhere;
-}
-#cardList .saved-card table { border-spacing: 2px; }
-#cardList .saved-card td { padding: 5px 0; font-size: 11px; }
-@media (max-width: 650px) {
-  .cards-column .section-title { grid-column: 1 / -1; }
-  .cards-column #ownedCards { grid-column: 1 / -1; }
-  #cardList { grid-template-columns: 1fr; }
-}
+.called-display{margin-top:14px;padding:14px;background:linear-gradient(145deg,#252016,#131319);border:1px solid #8b6a25;border-radius:14px;text-align:center}
+.called-heading{font-size:15px;font-weight:900;color:#f5c451;margin-bottom:8px}
+.last-called{font-size:64px;font-weight:1000;line-height:1.15;color:#ffe58a;text-shadow:0 0 16px #e8b73366;margin:5px 0 12px}
+.called-history{display:flex;flex-wrap:wrap;justify-content:center;gap:7px}
+.called-chip{min-width:40px;padding:8px 5px;border-radius:8px;background:#39301c;border:1px solid #9b762c;color:#ffe08a;font-size:18px;font-weight:900}
+.called-empty{font-size:12px;color:#aaa}
 
-</style></head><body><main><header><div class="brand">✦ BINGO GOLD</div><div class="pill">● MINI APP</div></header><section class="hero"><div class="eyebrow">BINGO • 1–75</div><h1>ወደ ጨዋታው እንኳን በደህና መጡ!</h1><div class="sub">ጨዋታህን ተከታተል፣ ካርዶችህን አስተዳድር።</div></section><div class="stats"><div class="stat"><small>የክሬዲት ቀሪ ሂሳብ</small><strong id="balance">—</strong><small>ከቦቱ ጋር ሲገናኝ ይታያል</small></div><div class="stat"><small>የተጠሩ ቁጥሮች</small><strong id="calledCount">0 / 75</strong><small>የጨዋታ ውሂብ ይጠብቃል</small></div></div><div class="section-title"><h2>የቁጥር ሰሌዳ</h2><span>B • I • N • G • O</span></div><div class="game-layout"><section class="game-panel"><div class="panel"><div class="column-labels"><div>B<br>1–15</div><div>I<br>16–30</div><div>N<br>31–45</div><div>G<br>46–60</div><div>O<br>61–75</div></div><div class="number-grid" id="numbers"></div></div><p class="note">የተጠሩ ቁጥሮች በወርቃማ ቀለም ይታያሉ።</p><div class="section-title"><h2>የጨዋታ መቆጣጠሪያ</h2><span>የጨዋታ ሁኔታ</span></div><div class="actions"><button id="buyCard" class="action">🎟️ ካርድ ግዛ</button><button id="myCards" class="action secondary">▦ ካርዶቼ</button></div></section><section class="cards-column"><div class="section-title"><h2>የተጫዋች ካርዶች</h2><span>እስከ 2 ካርዶች</span></div><section id="ownedCards" class="panel" style="display:none"><div id="cardList"></div></section></section></div><footer>BINGO GOLD • የክሬዲት ስርዓት</footer></main><script>const grid=document.getElementById('numbers');for(let row=0;row<15;row++){for(let col=0;col<5;col++){const n=col*15+row+1;const b=document.createElement('button');b.textContent=n;b.type='button';b.setAttribute('aria-label',['B','I','N','G','O'][col]+' '+n);grid.appendChild(b);}}</script>
+</style>
+</head>
+<body>
+<main>
+<header>
+<div class="brand">✦ BINGO GOLD</div>
+<div class="pill">● MINI APP</div>
+</header>
+
+<section class="hero">
+<div class="eyebrow">BINGO • 1–75</div>
+<h1>ወደ ጨዋታው እንኳን በደህና መጡ!</h1>
+<div class="sub">የጨዋታ ሁኔታህን ተከታተል፣ ካርዶችህን አስተዳድር።</div>
+</section>
+
+<div class="stats">
+<div class="stat"><small>የክሬዲት ቀሪ ሂሳብ</small><strong id="balance">—</strong><small>ከቦቱ ጋር ሲገናኝ ይታያል</small></div>
+<div class="stat"><small>የተጠሩ ቁጥሮች</small><strong id="calledCount">0 / 75</strong><small>የጨዋታ መረጃ</small></div>
+</div>
+
+<section id="selectionTimer" style="margin:16px 0;padding:16px;border:1px solid #f5c451;border-radius:14px;background:#15161b;text-align:center">
+  <div style="color:#f5c451;font-weight:bold">⏳ የካርድ ምርጫ ጊዜ</div>
+  <strong id="timerSeconds" style="display:block;font-size:32px;color:#fff;margin:8px 0">30</strong>
+  <div id="timerMessage" style="color:#c9c9c9">ካርድህን ለመምረጥ ጊዜ አለህ</div>
+</section>
+
+<section id="cardPoolSection" class="panel" style="margin:16px 0;padding:16px;border:1px solid #f5c451;border-radius:14px;background:#15161b">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+    <h2 style="color:#f5c451;margin:0">🃏 ካርድህን ምረጥ</h2>
+    <span id="poolCount" style="color:#ddd">50 ካርዶች</span>
+  </div>
+  <p style="color:#c9c9c9;margin:10px 0">የተዘጋ ካርድ ንካ። እስከ 2 ካርዶች መምረጥ ትችላለህ። እያንዳንዱ 10 ክሬዲት ነው።</p>
+  <div id="cardPool" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(82px,1fr));gap:10px"></div>
+  <div id="poolMessage" role="status" style="color:#f5c451;margin-top:12px"></div>
+</section>
+
+<div class="section-title"><h2>የቁጥር ሰሌዳ</h2><span>B • I • N • G • O</span></div>
+
+<div class="game-layout">
+<section class="game-panel">
+<div class="panel">
+<div class="column-labels">
+<div>B<br>1–15</div><div>I<br>16–30</div><div>N<br>31–45</div><div>G<br>46–60</div><div>O<br>61–75</div>
+</div>
+<div class="number-grid" id="numbers"></div>
+
+<div class="called-display">
+  <div class="called-heading">🔔 የተጠሩ ቁጥሮች</div>
+  <div id="lastCalled" class="last-called">—</div>
+  <div id="calledDisplay" class="called-history">ጨዋታው ሲጀምር ቁጥሮች እዚህ ይታያሉ</div>
+</div>
+
+</div>
+<p class="note">የተጠሩ ቁጥሮች በወርቃማ ቀለም ይታያሉ። የጨዋታ መረጃው በየጥቂት ሰከንዶች ይዘምናል።</p>
+<div class="section-title"><h2>የጨዋታ መቆጣጠሪያ</h2><span>አማራጮች</span></div>
+<div class="actions">
+<button id="buyCard" class="action">🎟️ ካርድ ግዛ</button>
+<button id="myCards" class="action secondary">▦ ካርዶቼ</button>
+</div>
+</section>
+
+<section class="cards-column">
+<div class="section-title"><h2>የተጫዋች ካርዶች</h2><span>እስከ 2 ካርዶች</span></div>
+<section id="ownedCards" class="panel" style="display:none"><div id="cardList"></div></section>
+</section>
+</div>
+<footer>BINGO GOLD • የክሬዲት ስርዓት</footer>
+</main>
+
+<script>
+const grid=document.getElementById('numbers');
+for(let row=0;row<15;row++){
+ for(let col=0;col<5;col++){
+  const n=col*15+row+1;
+  const b=document.createElement('button');
+  b.textContent=n;b.type='button';
+  b.setAttribute('aria-label',['B','I','N','G','O'][col]+' '+n);
+  grid.appendChild(b);
+ }
+}
+</script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
+(async function(){
+ const tg=window.Telegram&&window.Telegram.WebApp;
+ const pill=document.querySelector('.pill');
+ const balanceEl=document.getElementById('balance');
+ const countEl=document.getElementById('calledCount');
+ const buyBtn=document.getElementById('buyCard');
+ const cardsBtn=document.getElementById('myCards');
+ const headers={'X-Telegram-Init-Data':tg?tg.initData:''};
 
-(async function () {
-  const tg = window.Telegram && window.Telegram.WebApp;
-  const pill = document.querySelector('.pill');
-  const balanceEl = document.getElementById('balance');
-  const countEl = document.getElementById('calledCount');
-  const buyBtn = document.getElementById('buyCard');
-  const cardsBtn = document.getElementById('myCards');
-  const headers = {
-    'X-Telegram-Init-Data': tg ? tg.initData : ''
-  };
+ if(!tg||!tg.initData){
+  pill.textContent='OPEN IN TELEGRAM';
+  buyBtn.disabled=true;cardsBtn.disabled=true;return;
+ }
+ tg.ready();tg.expand();
 
-  if (!tg || !tg.initData) {
-    pill.textContent = 'OPEN IN TELEGRAM';
-    if (buyBtn) buyBtn.disabled = true;
-    if (cardsBtn) cardsBtn.disabled = true;
-    return;
+ const API_BASE='https://describing-approximately-packet-gale.trycloudflare.com';
+
+ async function api(url,options={}){
+  const response=await fetch(API_BASE+url,{
+   ...options,headers:{...headers,...(options.headers||{})}
+  });
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(data.error||('Request failed: '+response.status));
+  return data;
+ }
+
+
+ function updateCalledDisplay(called){
+  const values=(called||[]).map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=75);
+  document.getElementById('lastCalled').textContent=values.length?values[values.length-1]:'—';
+  const history=document.getElementById('calledDisplay');
+  if(!values.length){
+   history.innerHTML='<span class="called-empty">ጨዋታው ሲጀምር ቁጥሮች እዚህ ይታያሉ</span>';
+   return;
+  }
+  history.innerHTML=values.slice().reverse().map(n=>'<span class="called-chip">'+n+'</span>').join('');
+ }
+ function drawNumbers(called){
+  const set=new Set((called||[]).map(Number));
+  document.querySelectorAll('#numbers button').forEach(button=>{
+   button.classList.toggle('called',set.has(Number(button.textContent)));
+  });
+  countEl.textContent=(called||[]).length+' / 75';
+  updateCalledDisplay(called);
+ }
+
+ async function refresh(){
+  const [me,game]=await Promise.all([api('/api/me'),api('/api/game')]);
+  balanceEl.textContent=me.balance;
+  drawNumbers(game.called||[]);
+
+  const timerSeconds=document.getElementById('timerSeconds');
+  const timerMessage=document.getElementById('timerMessage');
+  const seconds=Number(game.selection_seconds||0);
+  if(game.active && game.buy_until){
+   window.selectionDeadline=Number(game.buy_until)*1000;
+  }else{
+   window.selectionDeadline=null;
   }
 
-  tg.ready();
-  tg.expand();
+  const remaining=game.active && window.selectionDeadline
+   ? Math.max(0,Math.ceil((window.selectionDeadline-Date.now())/1000))
+   : 0;
 
-  const API_BASE = 'https://peripheral-efforts-friendship-reminder.trycloudflare.com';
+  if(timerSeconds && timerMessage){
+   if(game.active && remaining>0){
+    timerSeconds.textContent=remaining;
+    timerMessage.textContent='ካርድህን ለመምረጥ ጊዜ አለህ';
+    buyBtn.disabled=false;
+   }else if(game.active){
+    timerSeconds.textContent='0';
+    timerMessage.textContent='የካርድ ምርጫ ጊዜ አብቅቷል።';
+    buyBtn.disabled=true;
+   }else{
+    timerSeconds.textContent='—';
+    timerMessage.textContent='አዲስ ጨዋታ እስኪጀምር ይጠብቁ።';
+    buyBtn.disabled=true;
+   }
+  }
 
-  async function api(url, options = {}) {
-    const response = await fetch(API_BASE + url, {
-      ...options,
-      headers: { ...headers, ...(options.headers || {}) }
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      throw new Error(data.error || ('Request failed: ' + response.status));
+  if(game.winner_id)pill.textContent='🏆 WINNER: '+(game.winner_name||'Player');
+  else if(game.active)pill.textContent='🟢 GAME LIVE';
+  else pill.textContent='⏳ WAITING';
+ }
+
+ function showCards(cards){
+  const section=document.getElementById('ownedCards');
+  const list=document.getElementById('cardList');
+  list.replaceChildren();
+  if(!cards||!cards.length){section.style.display='none';return;}
+  cards.forEach((item,index)=>{
+   const box=document.createElement('div');box.className='saved-card';
+   const title=document.createElement('h3');
+   title.textContent='🎟️ ካርድ '+(index+1)+' · #'+item.id;
+   box.appendChild(title);
+   const table=document.createElement('table');
+   const head=document.createElement('tr');
+   for(const letter of ['B','I','N','G','O']){
+    const cell=document.createElement('th');cell.textContent=letter;head.appendChild(cell);
+   }
+   table.appendChild(head);
+   for(const row of item.numbers){
+    const tr=document.createElement('tr');
+    for(const number of row){
+     const td=document.createElement('td');
+     td.textContent=number===0?'★':number;
+     if(number===0)td.className='free';
+     tr.appendChild(td);
     }
-    return data;
-  }
+    table.appendChild(tr);
+   }
+   box.appendChild(table);list.appendChild(box);
+  });
+  section.style.display='block';
+ }
 
-  function drawNumbers(called) {
-    const set = new Set((called || []).map(Number));
-    document.querySelectorAll('#numbers button').forEach(button => {
-      button.classList.toggle('called', set.has(Number(button.textContent)));
-    });
-    countEl.textContent = (called || []).length + ' / 75';
-  }
 
-  async function refresh() {
-    const [me, game] = await Promise.all([
-      api('/api/me'),
-      api('/api/game')
-    ]);
-    balanceEl.textContent = me.balance;
-    drawNumbers(game.called || []);
-    if (game.winner_id) {
-  pill.textContent = '🏆 WINNER: ' + (game.winner_name || 'Player');
-} else if (game.active) {
-  pill.textContent = '🟢 GAME LIVE';
-} else {
-  pill.textContent = '⏳ WAITING';
-}
-  }
+ async function loadCardPool(){
+  const area=document.getElementById('cardPool');
+  const message=document.getElementById('poolMessage');
+  const count=document.getElementById('poolCount');
+  if(!area)return;
 
-  function showCards(cards) {
-    const section = document.getElementById('ownedCards');
-    const list = document.getElementById('cardList');
-    list.replaceChildren();
-    if (!cards || !cards.length) {
-      section.style.display = 'none';
-      return;
+  try{
+   const data=await api('/api/card-pool');
+   area.replaceChildren();
+   const cards=data.cards||[];
+   const available=cards.filter(c=>c.available).length;
+   if(count)count.textContent=available+' ክፍት / '+cards.length;
+
+   for(const item of cards){
+    const b=document.createElement('button');
+    b.type='button';
+    b.style.cssText='min-height:82px;border:1px solid #f5c451;border-radius:12px;background:'+
+      (item.mine?'#3b3014':item.available?'linear-gradient(145deg,#24252b,#090a0d)':'#303036')+
+      ';color:#f5c451;font-weight:bold;padding:10px;cursor:pointer;';
+    b.textContent=item.mine?'✓ '+item.code:item.available?'✦ '+item.code:'🔒 '+item.code;
+    b.disabled=!data.active||Number(data.selection_seconds)<=0||(!item.available&&!item.mine);
+    b.setAttribute('aria-label',item.mine?'የእርስዎ '+item.code:item.available?'ካርድ '+item.code+' ምረጥ':'የተያዘ '+item.code);
+
+    if(item.available){
+     b.addEventListener('click',async()=>{
+      if(b.disabled)return;
+      b.disabled=true;
+      if(message)message.textContent=item.code+' በመመረጥ ላይ…';
+      try{
+       const result=await api('/api/card-pool/'+encodeURIComponent(item.code)+'/select',{method:'POST'});
+       balanceEl.textContent=result.balance;
+       const mine=await api('/api/cards');
+       showCards(mine.cards||[]);
+       if(message)message.textContent='✅ '+item.code+' ተመርጧል። ቀሪ ካርዶችህ፦ '+(2-result.cards_owned);
+       await loadCardPool();
+       await refresh();
+      }catch(e){
+       if(message)message.textContent='❌ '+e.message;
+       await loadCardPool();
+      }
+     });
     }
-    for (const item of cards) {
-      const box = document.createElement('div');
-      box.className = 'saved-card';
-      const title = document.createElement('h3');
-      title.textContent = '🎟️ ካርድ ' + (cards.indexOf(item) + 1) + ' · #' + item.id;
-      box.appendChild(title);
-      const table = document.createElement('table');
-      const head = document.createElement('tr');
-      for (const letter of ['B','I','N','G','O']) {
-        const cell = document.createElement('th');
-        cell.textContent = letter;
-        cell.style.color = 'var(--gold)';
-        head.appendChild(cell);
-      }
-      table.appendChild(head);
-      for (const row of item.numbers) {
-        const tr = document.createElement('tr');
-        for (const number of row) {
-          const td = document.createElement('td');
-          td.textContent = number === 0 ? '★' : number;
-          if (number === 0) td.className = 'free';
-          tr.appendChild(td);
-        }
-        table.appendChild(tr);
-      }
-      box.appendChild(table);
-      list.appendChild(box);
+    area.appendChild(b);
+   }
+
+   if(!data.active){
+    if(message)message.textContent='አዲስ ጨዋታ እስኪጀምር ይጠብቁ።';
+   }else if(Number(data.selection_seconds)<=0){
+    if(message)message.textContent='⏳ የካርድ ምርጫ ጊዜ አብቅቷል።';
+   }else if(!message.textContent){
+    message.textContent='ክፍት ካርድ ንካ። እስከ 2 ካርዶች መምረጥ ትችላለህ።';
+   }
+  }catch(e){
+   if(message)message.textContent='የካርድ ዝርዝር መጫን አልተቻለም። '+e.message;
+  }
+ }
+
+ function cardText(card,id){
+  const letters=['B','I','N','G','O'];
+  let out='🎟️ CARD #'+id+'\n'+letters.join('   ')+'\n';
+  for(let r=0;r<5;r++){
+   out+=card[r].map(n=>n===0?'★':String(n).padStart(2,' ')).join('   ')+'\n';
+  }
+  return out;
+ }
+
+ buyBtn.textContent='🃏 ከተዘጋጁ ካርዶች ምረጥ';
+ buyBtn.addEventListener('click',async()=>{
+  document.getElementById('cardPoolSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+  await loadCardPool();
+ });
+
+ cardsBtn.addEventListener('click',async()=>{
+  cardsBtn.disabled=true;
+  try{
+   const result=await api('/api/cards');
+   drawNumbers(result.called||[]);
+   if(!result.cards.length){alert('እስካሁን በዚህ ዙር ካርድ አልገዛህም።');return;}
+   showCards(result.cards);
+   alert(result.cards.map(c=>cardText(c.numbers,c.id)).join('\n\n'));
+  }catch(e){alert('❌ '+e.message);}
+  finally{cardsBtn.disabled=false;}
+ });
+
+ try{
+  await refresh();
+  await loadCardPool();
+  setInterval(()=>{
+    const timerSeconds=document.getElementById('timerSeconds');
+    if(timerSeconds && window.selectionDeadline){
+      const remaining=Math.max(0,Math.ceil((window.selectionDeadline-Date.now())/1000));
+      timerSeconds.textContent=remaining;
     }
-    section.style.display = 'block';
-  }
-
-  function cardText(card, id) {
-    const letters = ['B', 'I', 'N', 'G', 'O'];
-    let out = '🎟️ CARD #' + id + '\n';
-    out += letters.join('   ') + '\n';
-    for (let r = 0; r < 5; r++) {
-      out += card[r].map(n =>
-        n === 0 ? '★' : String(n).padStart(2, ' ')
-      ).join('   ') + '\n';
-    }
-    return out;
-  }
-
-  if (buyBtn) {
-    buyBtn.addEventListener('click', async () => {
-      buyBtn.disabled = true;
-      try {
-        const result = await api('/api/cards', { method: 'POST' });
-        balanceEl.textContent = result.balance;
-        alert('✅ ካርድ ተገዝቷል!\n\n' +
-          cardText(result.card, result.card_id));
-        showCards([{id: result.card_id, numbers: result.card}]);
-        await refresh();
-      } catch (e) {
-        alert('❌ ' + e.message);
-      } finally {
-        buyBtn.disabled = false;
-      }
-    });
-  }
-
-  if (cardsBtn) {
-    cardsBtn.addEventListener('click', async () => {
-      cardsBtn.disabled = true;
-      try {
-        const result = await api('/api/cards');
-        drawNumbers(result.called || []);
-        if (!result.cards.length) {
-          alert('እስካሁን በዚህ ዙር ካርድ አልገዛህም።');
-          return;
-        }
-        showCards(result.cards);
-        const output = result.cards.map(c =>
-          cardText(c.numbers, c.id)
-        ).join('\n\n');
-        alert(output);
-      } catch (e) {
-        alert('❌ ' + e.message);
-      } finally {
-        cardsBtn.disabled = false;
-      }
-    });
-  }
-
-    try {
+  },1000);
+  setInterval(async()=>{
+   try{
     await refresh();
-
-    setInterval(async () => {
-      try {
-        await refresh();
-      } catch (e) {
-        console.error('Refresh failed:', e);
-      }
-    }, 5000);
-  } catch (e) {
-    pill.textContent = 'CONNECTION ERROR';
-    console.error(e);
-  }
+    await loadCardPool();
+   }catch(e){console.error('Refresh failed:',e);}
+  },5000);
+ }catch(e){pill.textContent='CONNECTION ERROR';console.error(e);}
 })();
-</script></body></html>
+</script>
+</body>
+</html>
