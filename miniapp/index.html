@@ -110,6 +110,83 @@ footer{text-align:center;color:#858795;font-size:11px;margin-top:25px}
 .called-chip{min-width:40px;padding:8px 5px;border-radius:8px;background:#39301c;border:1px solid #9b762c;color:#ffe08a;font-size:18px;font-weight:900}
 .called-empty{font-size:12px;color:#aaa}
 
+
+/* BINGO GOLD PREMIUM DESIGN */
+body{
+ background:radial-gradient(ellipse at top,#493519 0,transparent 42%),
+ linear-gradient(180deg,#101116,#07080b 75%);
+}
+main{max-width:1100px;padding:18px 14px 35px}
+.brand{color:#f4c44e;text-shadow:0 0 18px #f4c44e55}
+.pill{background:#211b10;border-color:#98752e;color:#ffe7a0}
+.hero{
+ background:linear-gradient(125deg,#382a17,#1a1920 65%,#101117);
+ border:1px solid #80612b;box-shadow:0 12px 35px #0008;
+}
+.stat,.panel{
+ background:linear-gradient(145deg,#20212b,#111218);
+ border:1px solid #49434a;border-radius:17px;
+ box-shadow:0 7px 20px #0004;
+}
+.stat strong{color:#ffe7a0}
+#selectionTimer,#cardPoolSection{
+ background:linear-gradient(145deg,#211b11,#13141a)!important;
+ border:1px solid #98752e!important;border-radius:17px!important;
+ box-shadow:0 8px 24px #0005;
+}
+#timerSeconds{color:#ffe7a0!important;text-shadow:0 0 15px #f4c44e55}
+#cardPoolSection h2{color:#f4c44e!important}
+#cardPool button{
+ min-height:43px;border:1px solid #80612b;border-radius:10px;
+ background:linear-gradient(145deg,#29251b,#171820);
+ color:#ffe7a0;font-weight:900;
+}
+.section-title h2{color:#fff}
+.section-title span{color:#f4c44e}
+.game-layout{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:13px}
+.number-grid button{
+ background:linear-gradient(145deg,#30313c,#20212a);
+ border:1px solid #454653;border-radius:8px;
+}
+.number-grid button.called{
+ background:linear-gradient(145deg,#ffe99c,#e5ad31);
+ color:#201606;border-color:#fff0a5;
+ box-shadow:0 0 10px #e8b73366;
+}
+.called-display{
+ background:linear-gradient(145deg,#292116,#14141a);
+ border:1px solid #98752e;border-radius:15px;
+}
+.called-heading{color:#f4c44e}
+.last-called{color:#ffe7a0;text-shadow:0 0 18px #e8b73366}
+.called-chip{background:#39301c;border:1px solid #9b762c;color:#ffe08a}
+.saved-card{
+ background:linear-gradient(145deg,#292a34,#191a21);
+ border:1px solid #80652c;border-radius:13px;
+}
+.saved-card h3,.saved-card th{color:#f4c44e}
+button.action{
+ border:1px solid #f4c44e;
+ background:linear-gradient(145deg,#ffe18a,#d99a20);
+ color:#211705;border-radius:12px;font-weight:900;
+}
+button.secondary{background:#20212a;color:#f4c44e;border-color:#80652c}
+button:not(:disabled):active{transform:scale(.97)}
+@media(max-width:650px){
+ main{padding:9px 7px 20px}
+ .game-layout{grid-template-columns:1fr;gap:8px}
+ .game-panel .panel{padding:8px}
+ #cardPool{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+ #cardList{grid-template-columns:1fr 1fr;gap:6px}
+ .number-grid button{font-size:clamp(11px,3.2vw,15px)}
+ .called-display{padding:10px}
+ .last-called{font-size:42px}
+}
+@media(max-width:360px){
+ #cardList{grid-template-columns:1fr}
+ #cardPool{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+
 </style>
 </head>
 <body>
