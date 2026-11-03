@@ -1,3 +1,5 @@
 Flask
 gunicorn
-python-telegram-bot
+python-telegram-bot[job-queue]
+
+psycopg[binary]

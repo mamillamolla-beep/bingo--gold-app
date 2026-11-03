@@ -1,3 +1,4 @@
+import os
 import json
 import random
 import sqlite3
@@ -6,7 +7,7 @@ import time
 from telegram.ext import ContextTypes
 
 PRIZE_CREDITS = 100
-DB_FILE = "bingo.db"
+DB_FILE = os.environ.get("BINGO_DB_PATH", "bingo.db")
 BUY_SECONDS = 30
 CALL_SECONDS = 5
 NEXT_ROUND_SECONDS = 30
