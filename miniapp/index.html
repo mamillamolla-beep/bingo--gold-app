@@ -187,6 +187,37 @@ button:not(:disabled):active{transform:scale(.97)}
  #cardPool{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 
+/* BINGO GOLD PREMIUM DESIGN V2 */
+:root{--gold:#f6cc62;--panel:#171820;--line:#51452e}
+body{background:radial-gradient(ellipse at 50% -10%,#59401c 0%,transparent 48%),linear-gradient(180deg,#0d0e13,#07080b 85%)}
+header{padding:7px 4px}
+.brand{text-shadow:0 0 18px #f4c44e66;letter-spacing:1.5px}
+.pill{background:linear-gradient(145deg,#2b2315,#17151a);box-shadow:0 0 12px #f4c44e18}
+.hero{background:linear-gradient(120deg,#49351b,#211d19 55%,#12131a);border-color:#a17a32;box-shadow:0 12px 32px #0009,inset 0 1px #ffe6a044}
+.stat,.panel{background:linear-gradient(145deg,#22232d,#121319);border-color:#55472f;box-shadow:0 7px 22px #0006}
+.stat strong{color:#ffe6a0;text-shadow:0 0 12px #f4c44e33}
+.section-title h2{color:#fff}
+.section-title span{color:#e7bd58}
+.number-grid button{transition:background .15s,border-color .15s;box-shadow:inset 0 1px #ffffff0b}
+.number-grid button.called{background:linear-gradient(145deg,#fff0b4,#e5a927);box-shadow:0 0 12px #e8b73377;color:#211606}
+.called-display{background:linear-gradient(145deg,#302516,#15151b);border-color:#b18a3d;box-shadow:0 8px 25px #0007}
+.called-heading{color:#f6ce70}
+.called-chip{background:#40321b;border-color:#a98235;color:#ffe6a0}
+.saved-card{background:linear-gradient(145deg,#292a34,#171820);border-color:#9a7738;box-shadow:0 5px 15px #0005}
+.saved-card td{background:#343541}
+.saved-card td.free{background:linear-gradient(145deg,#ffe89b,#dba52d);color:#17120a}
+button.action{background:linear-gradient(145deg,#ffebaa,#f2c34e 55%,#c88b19);box-shadow:0 5px 14px #c58d2633;border-color:#ffe6a0}
+button.secondary{background:linear-gradient(145deg,#292a33,#171820);border-color:#9a7738;color:#ffdc83}
+button:not(:disabled){transition:filter .15s,transform .15s,box-shadow .15s}
+button:not(:disabled):active{transform:scale(.97);filter:brightness(1.12)}
+footer{color:#aaa18e}
+@media(max-width:650px){
+ .hero{box-shadow:0 7px 20px #0008}
+ .stat,.panel{border-radius:12px}
+ .number-grid button{border-radius:5px}
+ .called-display{border-radius:11px}
+}
+
 </style>
 </head>
 <body>
