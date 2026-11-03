@@ -1,22 +1,20 @@
-import os
 import json
 import random
-import sqlite3
 import time
 
 from telegram.ext import ContextTypes
+from db import connect_db
 
 PRIZE_CREDITS = 100
-DB_FILE = os.environ.get("BINGO_DB_PATH", "bingo.db")
 BUY_SECONDS = 30
 CALL_SECONDS = 5
 NEXT_ROUND_SECONDS = 30
 
 
-def connect_db():
-    db = sqlite3.connect(DB_FILE, timeout=20)
-    db.row_factory = sqlite3.Row
-    return db
+def as_list(value):
+    if isinstance(value, str):
+        return json.loads(value)
+    return value or []
 
 
 def current_round(db):
@@ -39,14 +37,14 @@ def has_bingo(card, called):
 
 
 def find_winner(db, game):
-    called = set(json.loads(game["called"]))
+    called = set(as_list(game["called"]))
     cards = db.execute(
-        "SELECT user_id, numbers FROM cards WHERE round_id = ? ORDER BY id",
+        "SELECT user_id, numbers FROM cards WHERE round_id = %s ORDER BY id",
         (game["id"],),
     ).fetchall()
 
     for item in cards:
-        card = json.loads(item["numbers"])
+        card = as_list(item["numbers"])
         if has_bingo(card, called):
             return item["user_id"]
     return None
@@ -69,28 +67,25 @@ async def broadcast(context, message):
 
 async def finish_round(context, round_id, winner_id=None):
     with connect_db() as db:
-        db.execute("BEGIN IMMEDIATE")
         changed = db.execute(
-            "UPDATE rounds SET active = 0, winner_id = ? "
-            "WHERE id = ? AND active = 1 AND winner_id IS NULL",
+            "UPDATE rounds SET active = 0, winner_id = %s "
+            "WHERE id = %s AND active = 1 AND winner_id IS NULL",
             (winner_id, round_id),
         ).rowcount
 
         if changed != 1:
-            db.rollback()
             return
 
         if winner_id is not None:
             db.execute(
-                "UPDATE users SET balance = balance + ? WHERE user_id = ?",
+                "UPDATE users SET balance = balance + %s WHERE user_id = %s",
                 (PRIZE_CREDITS, winner_id),
             )
-        db.commit()
 
     if winner_id is not None:
         with connect_db() as db:
             user = db.execute(
-                "SELECT username FROM users WHERE user_id = ?",
+                "SELECT username FROM users WHERE user_id = %s",
                 (winner_id,),
             ).fetchone()
 
@@ -118,6 +113,7 @@ async def start_round(context: ContextTypes.DEFAULT_TYPE):
     now = time.time()
 
     with connect_db() as db:
+        db.execute("SELECT pg_advisory_xact_lock(20261030)")
         game = current_round(db)
 
         if game and game["active"]:
@@ -127,20 +123,17 @@ async def start_round(context: ContextTypes.DEFAULT_TYPE):
             if buy_until is None:
                 buy_until = now + BUY_SECONDS
                 db.execute(
-                    "UPDATE rounds SET buy_until = ? WHERE id = ?",
+                    "UPDATE rounds SET buy_until = %s WHERE id = %s",
                     (buy_until, round_id),
                 )
-                db.commit()
         else:
             buy_until = now + BUY_SECONDS
-            db.execute(
+            game = db.execute(
                 "INSERT INTO rounds (active, called, winner_id, buy_until) "
-                "VALUES (1, '[]', NULL, ?)",
+                "VALUES (1, '[]'::jsonb, NULL, %s) RETURNING id",
                 (buy_until,),
-            )
-            game = current_round(db)
+            ).fetchone()
             round_id = game["id"]
-            db.commit()
 
     if buy_until > now:
         await broadcast(
@@ -163,47 +156,56 @@ async def call_tick(context: ContextTypes.DEFAULT_TYPE):
     now = time.time()
 
     with connect_db() as db:
-        db.execute("BEGIN IMMEDIATE")
+        db.execute("SELECT pg_advisory_xact_lock(20261030)")
         game = db.execute(
-            "SELECT * FROM rounds WHERE id = ?", (round_id,)
+            "SELECT * FROM rounds WHERE id = %s FOR UPDATE",
+            (round_id,),
         ).fetchone()
 
         if not game or not game["active"]:
-            db.rollback()
             return
 
         buy_until = game["buy_until"]
         if buy_until is not None and now < buy_until:
-            db.commit()
-            context.job_queue.run_once(
-                call_tick,
-                buy_until - now,
-                data={"round_id": round_id},
-                name=f"bingo-call-{round_id}",
-            )
-            return
+            remaining = buy_until - now
+            reschedule = True
+        else:
+            reschedule = False
+            winner_id = find_winner(db, game)
 
-        winner_id = find_winner(db, game)
-        if winner_id is not None:
-            db.commit()
-            await finish_round(context, round_id, winner_id)
-            return
+            if winner_id is not None:
+                called = set(as_list(game["called"]))
+                number = None
+            else:
+                called = set(as_list(game["called"]))
+                available = [n for n in range(1, 76) if n not in called]
 
-        called = set(json.loads(game["called"]))
-        available = [n for n in range(1, 76) if n not in called]
+                if not available:
+                    number = None
+                else:
+                    number = random.choice(available)
+                    called.add(number)
+                    db.execute(
+                        "UPDATE rounds SET called = %s::jsonb WHERE id = %s",
+                        (json.dumps(sorted(called)), round_id),
+                    )
 
-        if not available:
-            db.commit()
-            await finish_round(context, round_id)
-            return
-
-        number = random.choice(available)
-        called.add(number)
-        db.execute(
-            "UPDATE rounds SET called = ? WHERE id = ?",
-            (json.dumps(sorted(called)), round_id),
+    if reschedule:
+        context.job_queue.run_once(
+            call_tick,
+            remaining,
+            data={"round_id": round_id},
+            name=f"bingo-call-{round_id}",
         )
-        db.commit()
+        return
+
+    if winner_id is not None:
+        await finish_round(context, round_id, winner_id)
+        return
+
+    if number is None:
+        await finish_round(context, round_id)
+        return
 
     letter = (
         "B" if number <= 15 else
@@ -222,7 +224,8 @@ async def call_tick(context: ContextTypes.DEFAULT_TYPE):
 
     with connect_db() as db:
         game = db.execute(
-            "SELECT * FROM rounds WHERE id = ?", (round_id,)
+            "SELECT * FROM rounds WHERE id = %s",
+            (round_id,),
         ).fetchone()
         winner_id = find_winner(db, game) if game and game["active"] else None
 
@@ -241,4 +244,3 @@ async def call_tick(context: ContextTypes.DEFAULT_TYPE):
 
 async def auto_game_start(context: ContextTypes.DEFAULT_TYPE):
     await start_round(context)
-
