@@ -216,12 +216,6 @@ async def call_tick(context: ContextTypes.DEFAULT_TYPE):
         "O"
     )
 
-    await broadcast(
-        context,
-        f"🎲 የተጠራው ቁጥር: {letter}-{number}\n"
-        f"የተጠሩ ቁጥሮች: {len(called)}/75\n"
-        "ካርድህን /mycards በመጫን ተመልከት።",
-    )
 
     with connect_db() as db:
         game = db.execute(
