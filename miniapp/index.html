@@ -430,13 +430,18 @@ for(let row=0;row<15;row++){
   }
   history.innerHTML=values.slice(-4,-1).reverse().map(n=>'<span class="called-chip">'+n+'</span>').join('');
  }
+ const calledCardNumbers=new Set();
+ let displayedCards=[];
  function drawNumbers(called){
+  calledCardNumbers.clear();
+  (called||[]).forEach(n=>calledCardNumbers.add(Number(n)));
   const set=new Set((called||[]).map(Number));
   document.querySelectorAll('#numbers button').forEach(button=>{
    button.classList.toggle('called',set.has(Number(button.textContent)));
   });
   countEl.textContent=(called||[]).length+' / 75';
   updateCalledDisplay(called);
+  if(displayedCards.length)showCards(displayedCards);
  }
 
  async function refresh(){
@@ -488,6 +493,7 @@ for(let row=0;row<15;row++){
  }
 
  function showCards(cards){
+  displayedCards=cards||[];
   const section=document.getElementById('ownedCards');
   const list=document.getElementById('cardList');
   list.replaceChildren();
@@ -509,6 +515,10 @@ for(let row=0;row<15;row++){
      const td=document.createElement('td');
      td.textContent=number===0?'★':number;
      if(number===0)td.className='free';
+     else if(calledCardNumbers.has(Number(number))){
+      td.className='called';
+      td.style.cssText='background:#171923!important;color:#ffe08a!important;border:2px solid #d5a52e!important;box-shadow:inset 0 0 5px #000;';
+     }
      tr.appendChild(td);
     }
     table.appendChild(tr);
