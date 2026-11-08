@@ -130,7 +130,7 @@ async def start_round(context: ContextTypes.DEFAULT_TYPE):
             buy_until = now + BUY_SECONDS
             game = db.execute(
                 "INSERT INTO rounds (active, called, winner_id, buy_until) "
-                "VALUES (1, '[]'::jsonb, NULL, %s) RETURNING id",
+                "VALUES (TRUE, '[]'::jsonb, NULL, %s) RETURNING id",
                 (buy_until,),
             ).fetchone()
             round_id = game["id"]
