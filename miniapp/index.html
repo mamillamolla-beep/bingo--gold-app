@@ -394,7 +394,7 @@ for(let row=0;row<15;row++){
    history.innerHTML='<span class="called-empty">ጨዋታው ሲጀምር ቁጥሮች እዚህ ይታያሉ</span>';
    return;
   }
-  history.innerHTML=values.slice().reverse().map(n=>'<span class="called-chip">'+n+'</span>').join('');
+  history.innerHTML=values.slice(-4,-1).reverse().map(n=>'<span class="called-chip">'+n+'</span>').join('');
  }
  function drawNumbers(called){
   const set=new Set((called||[]).map(Number));
