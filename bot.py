@@ -588,51 +588,26 @@ async def call_number(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
 
         called_value = game["called"]
-        called = set(
+        called = (
             json.loads(called_value)
             if isinstance(called_value, str)
-            else called_value
+            else list(called_value)
         )
 
-        available = [n for n in range(1, 76) if n not in called]
+        called_set = set(called)
+        available = [n for n in range(1, 76) if n not in called_set]
 
         if not available:
             await update.message.reply_text("75ቱም ቁጥሮች ተጠርተዋል።")
             return
 
         number = random.choice(available)
-        called.add(number)
+        called.append(number)
 
         db.execute(
             "UPDATE rounds SET called = %s::jsonb WHERE id = %s",
-            (json.dumps(sorted(called)), game["id"])
+            (json.dumps(called), game["id"])
         )
-
-        chats = db.execute("SELECT chat_id FROM users").fetchall()
-
-    letter = (
-        "B" if number <= 15 else
-        "I" if number <= 30 else
-        "N" if number <= 45 else
-        "G" if number <= 60 else
-        "O"
-    )
-
-    message = (
-        f"🎲 የተጠራው ቁጥር: {letter}-{number}\n"
-        f"በዚህ ጨዋታ የተጠሩ ቁጥሮች: {len(called)}/75\n"
-        "ካርድህን በ /mycards ተመልከት።"
-    )
-
-    for item in chats:
-        try:
-            await context.bot.send_message(
-                chat_id=item["chat_id"],
-                text=message,
-                reply_markup=main_keyboard()
-            )
-        except Exception:
-            pass
 
 async def endgame(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not await admin_only(update):
