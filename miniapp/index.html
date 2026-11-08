@@ -276,6 +276,38 @@ footer{color:#526078}
  button.action{font-size:10px;padding:9px 2px}
 }
 
+
+/* GOODBINGO CALL DISPLAY */
+.called-display{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  margin:8px 0 12px;padding:8px;background:transparent;
+  border:0;box-shadow:none;text-align:center;
+}
+.called-display .called-history{
+  order:0;display:flex;align-items:center;justify-content:center;
+  flex-wrap:nowrap;gap:5px;min-width:0;min-height:58px;
+  padding:8px;background:#fff;border:1px solid #cbd3df;
+  border-radius:9px;flex:1;
+}
+.called-display .called-chip{
+  min-width:25px;padding:7px 4px;background:#fff;color:#172235;
+  border:1px solid #cbd3df;border-radius:7px;font-size:15px;
+}
+.last-call-group{order:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.called-display .called-heading{font-size:10px;color:#526078;margin:0}
+.called-display .last-called{
+  display:flex;align-items:center;justify-content:center;
+  width:76px;height:76px;min-width:76px;margin:0;
+  border-radius:50%;background:#e9b900;color:#fff;
+  border:5px solid #fff;box-shadow:0 3px 10px #17223533;
+  font-size:30px;text-shadow:none;
+}
+@media(max-width:360px){
+  .called-display{gap:6px;padding:5px}
+  .called-display .called-chip{min-width:21px;padding:6px 2px;font-size:12px}
+  .called-display .last-called{width:66px;height:66px;min-width:66px;font-size:26px}
+}
+
 </style>
 </head>
 <body>
@@ -317,16 +349,18 @@ footer{color:#526078}
 <div class="game-layout">
 <section class="game-panel">
 <div class="panel">
+<div class="called-display">
+  <div id="calledDisplay" class="called-history">ጨዋታው ሲጀምር ቁጥሮች እዚህ ይታያሉ</div>
+  <div class="last-call-group">
+    <div class="called-heading">🔔 የመጨረሻ ጥሪ</div>
+    <div id="lastCalled" class="last-called">—</div>
+  </div>
+</div>
+
 <div class="column-labels">
 <div>B<br>1–15</div><div>I<br>16–30</div><div>N<br>31–45</div><div>G<br>46–60</div><div>O<br>61–75</div>
 </div>
 <div class="number-grid" id="numbers"></div>
-
-<div class="called-display">
-  <div class="called-heading">🔔 የተጠሩ ቁጥሮች</div>
-  <div id="lastCalled" class="last-called">—</div>
-  <div id="calledDisplay" class="called-history">ጨዋታው ሲጀምር ቁጥሮች እዚህ ይታያሉ</div>
-</div>
 
 </div>
 <p class="note">የተጠሩ ቁጥሮች በወርቃማ ቀለም ይታያሉ። የጨዋታ መረጃው በየጥቂት ሰከንዶች ይዘምናል።</p>
