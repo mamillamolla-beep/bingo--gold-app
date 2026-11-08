@@ -68,8 +68,8 @@ async def broadcast(context, message):
 async def finish_round(context, round_id, winner_id=None):
     with connect_db() as db:
         changed = db.execute(
-            "UPDATE rounds SET active = 0, winner_id = %s "
-            "WHERE id = %s AND active = 1 AND winner_id IS NULL",
+            "UPDATE rounds SET active = FALSE, winner_id = %s "
+            "WHERE id = %s AND active = TRUE AND winner_id IS NULL",
             (winner_id, round_id),
         ).rowcount
 
