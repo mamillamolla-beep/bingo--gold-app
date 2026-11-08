@@ -177,17 +177,18 @@ async def call_tick(context: ContextTypes.DEFAULT_TYPE):
                 called = set(as_list(game["called"]))
                 number = None
             else:
-                called = set(as_list(game["called"]))
+                called_list = as_list(game["called"])
+                called = set(called_list)
                 available = [n for n in range(1, 76) if n not in called]
 
                 if not available:
                     number = None
                 else:
                     number = random.choice(available)
-                    called.add(number)
+                    called_list.append(number)
                     db.execute(
                         "UPDATE rounds SET called = %s::jsonb WHERE id = %s",
-                        (json.dumps(sorted(called)), round_id),
+                        (json.dumps(called_list), round_id),
                     )
 
     if reschedule:
