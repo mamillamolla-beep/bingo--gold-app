@@ -23,7 +23,7 @@ h1{font-size:clamp(21px,5vw,32px);margin:8px 0}
 .section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:19px 2px 10px}
 .section-title h2{font-size:15px;margin:0}
 .section-title span{font-size:11px;color:var(--muted)}
-.game-layout{display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1.45fr) minmax(0,1fr);gap:8px;align-items:start}
+.game-layout{display:none;grid-template-columns:minmax(0,.62fr) minmax(0,1.45fr) minmax(0,1fr);gap:8px;align-items:start}
 .game-panel,.cards-column{min-width:0}
 .game-panel{order:0}
 .cards-column{order:2}
@@ -218,6 +218,64 @@ footer{color:#aaa18e}
  .called-display{border-radius:11px}
 }
 
+/* GOODBINGO CARD FOOTER */
+.saved-card::after{content:"B I N G O";display:block;margin:10px -10px 0;padding:10px 4px;background:#2861df;color:#fff;text-align:center;font-size:13px;font-weight:1000;letter-spacing:5px;border-radius:0 0 25px 25px}
+
+/* GOODBINGO STYLE LAYOUT */
+body{background:#e9edf4;color:#172235;font-family:Arial,system-ui,sans-serif}
+main{max-width:1100px;padding:0 0 20px;background:#e9edf4}
+header{background:#1d2939;padding:15px 18px;margin:0;color:white}
+.brand{color:#fff;text-shadow:none}
+.pill{background:#29384c;color:#f6ca4c;border-color:#53647c}
+.hero{display:none}
+.stats{margin:0;gap:0;background:#1d2939;padding:10px 8px 14px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.stat{background:transparent;border:0;border-radius:0;box-shadow:none;text-align:center;padding:5px}
+.stat small{color:#aebbd0}
+.stat strong{color:#f5c542;font-size:23px}
+#selectionTimer{margin:8px!important;padding:8px!important;background:#202d40!important;border-color:#52627a!important}
+#selectionTimer div{color:#f5c542!important}
+#timerSeconds{font-size:25px!important;color:white!important}
+#cardPoolSection{margin:8px!important;background:#fff!important;border-color:#cbd3df!important;color:#172235}
+#cardPoolSection p{color:#526078!important}
+#cardPoolSection h2{color:#1d2939!important}
+#poolCount{color:#526078!important}
+.section-title{margin:10px 8px 7px}
+.section-title h2{color:#1d2939}
+.section-title span{color:#526078}
+.game-layout{grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:5px;padding:0 5px}
+.game-panel .panel,.cards-column .panel{background:#f7f9fc;border:0;border-radius:8px;padding:5px;box-shadow:0 3px 12px #17223518}
+.column-labels div{border-radius:3px!important}
+.number-grid button{background:#fff;color:#111;border:1px solid #cbd3df;border-radius:3px;font-weight:900}
+.number-grid button.called{background:#159b59;color:white;border-color:#087b42;box-shadow:inset 0 0 0 2px #ffffff55}
+.cards-column .section-title{margin-top:8px}
+#cardList{grid-template-columns:1fr;gap:12px}
+.saved-card{background:#fff;border:0;border-radius:24px 24px 32px 32px;padding:12px 10px 0;box-shadow:0 7px 18px #17223522;overflow:hidden}
+.saved-card h3{color:#1d2939;font-size:12px}
+.saved-card table{border-spacing:5px;width:100%}
+.saved-card th{background:#2861df;color:#fff;border-radius:4px;padding:7px 1px;font-size:13px}
+.saved-card td{background:#edf1f7;color:#172235;border:1px solid #cbd3df;border-radius:8px;padding:9px 1px;font-size:clamp(10px,2vw,16px);font-weight:900}
+.saved-card td.free{background:#16a45b;color:#fff}
+.called-display{background:transparent;border:0;box-shadow:none;padding:8px;margin-top:8px}
+.called-heading{color:#1d2939;font-size:12px}
+.last-called{display:inline-flex;align-items:center;justify-content:center;width:100px;height:100px;border-radius:50%;background:#e9b900;color:#fff;border:6px solid #fff;box-shadow:0 4px 12px #17223533;font-size:38px;margin:5px auto 12px;text-shadow:none}
+.called-chip{background:#fff;color:#172235;border:1px solid #cbd3df;border-radius:7px}
+button.action{background:#2861df;color:#fff;border:0;border-radius:8px}
+button.secondary{background:#1d2939;color:#fff;border:0}
+footer{color:#526078}
+@media(max-width:650px){
+ main{padding:0 0 14px}
+ .game-layout{grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:4px;padding:0 4px}
+ .game-panel .panel,.cards-column .panel{padding:3px}
+ .number-grid button{font-size:clamp(9px,2.7vw,14px)}
+ .saved-card{padding:8px 5px 0;border-radius:18px 18px 25px 25px}
+ .saved-card table{border-spacing:3px}
+ .saved-card td{padding:7px 0;font-size:clamp(9px,2.5vw,14px)}
+ .saved-card th{font-size:11px;padding:6px 0}
+ .last-called{width:76px;height:76px;font-size:30px;border-width:5px}
+ .actions{grid-template-columns:1fr}
+ button.action{font-size:10px;padding:9px 2px}
+}
+
 </style>
 </head>
 <body>
@@ -365,6 +423,15 @@ for(let row=0;row<15;row++){
    ? Math.max(0,Math.ceil((window.selectionDeadline-Date.now())/1000))
    : 0;
 
+  const timerSection=document.getElementById('selectionTimer');
+  const poolSection=document.getElementById('cardPoolSection');
+  const gameLayout=document.querySelector('.game-layout');
+  const gameStarted=game.active && remaining<=0;
+
+  if(gameLayout) gameLayout.style.display=gameStarted?'grid':'none';
+  if(timerSection) timerSection.style.display=gameStarted?'none':'block';
+  if(poolSection) poolSection.style.display=gameStarted?'none':'block';
+
   if(timerSeconds && timerMessage){
    if(game.active && remaining>0){
     timerSeconds.textContent=remaining;
@@ -466,7 +533,7 @@ for(let row=0;row<15;row++){
    if(!data.active){
     if(message)message.textContent='አዲስ ጨዋታ እስኪጀምር ይጠብቁ።';
    }else if(Number(data.selection_seconds)<=0){
-    if(message)message.textContent='⏳ የካርድ ምርጫ ጊዜ አብቅቷል።';
+    if(message)message.textContent='የካርድ ምርጫ ተዘግቷል። ጨዋታውን ይከታተሉ።';
    }else if(!message.textContent){
     message.textContent='ክፍት ካርድ ንካ። እስከ 2 ካርዶች መምረጥ ትችላለህ።';
    }
