@@ -65,19 +65,7 @@ def find_winner(db, game):
 
 
 async def broadcast(context, message):
-    with connect_db() as db:
-        chats = db.execute(
-            "SELECT DISTINCT chat_id FROM users WHERE chat_id IS NOT NULL"
-        ).fetchall()
-
-    for row in chats:
-        try:
-            await context.bot.send_message(
-                chat_id=row["chat_id"], text=message
-            )
-        except Exception:
-            pass
-
+    return
 
 async def finish_round(context, round_id, winner=None):
     winner_id = winner["user_id"] if winner else None
