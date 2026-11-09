@@ -120,7 +120,7 @@ def game_state():
             )
 
         player_count = db.execute(
-            'SELECT COUNT(DISTINCT user_id) AS count FROM cards WHERE round_id=%s',
+            'SELECT COUNT(*) AS count FROM cards WHERE round_id=%s',
             (row['id'],)
         ).fetchone()['count']
 
