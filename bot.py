@@ -217,6 +217,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(
         "🎱 እንኳን ወደ Bingo Bot በደህና መጡ!\n\n"
+        f"🆔 የእርስዎ Telegram ID: {update.effective_user.id}\n"
+        "💰 ክሬዲት ለማግኘት አድሚኑን ያናግሩ።\n\n"
         f"🎟️ የአንድ ካርድ ዋጋ: {CARD_PRICE} ክሬዲት\n"
         f"🏆 የተወሰነ ሽልማት: {PRIZE_CREDITS} ክሬዲት\n\n"
         "ትዕዛዞች:\n"
