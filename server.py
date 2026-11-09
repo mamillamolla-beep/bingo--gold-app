@@ -119,6 +119,11 @@ def game_state():
                 round_id=None
             )
 
+        player_count = db.execute(
+            'SELECT COUNT(DISTINCT user_id) AS count FROM cards WHERE round_id=%s',
+            (row['id'],)
+        ).fetchone()['count']
+
         winner_name = None
         if row['winner_id'] is not None:
             winner = db.execute(
@@ -138,6 +143,8 @@ def game_state():
 
     return jsonify(
         round_id=row['id'],
+        player_count=player_count,
+        prize_credits=100,
         active=bool(row['active']),
         called=called,
         winner_id=row['winner_id'],

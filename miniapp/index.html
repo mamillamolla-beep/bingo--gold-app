@@ -16,10 +16,10 @@ header{display:flex;align-items:center;justify-content:space-between;gap:8px;mar
 .eyebrow{color:var(--gold);font-size:11px;font-weight:900;letter-spacing:2px}
 h1{font-size:clamp(21px,5vw,32px);margin:8px 0}
 .sub{color:var(--muted);font-size:13px;line-height:1.7}
-.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
-.stat{padding:13px;background:linear-gradient(145deg,#1c1d26,#111218);border:1px solid var(--line);border-radius:15px}
-.stat small{display:block;color:var(--muted);font-size:11px}
-.stat strong{display:block;color:var(--gold);font-size:25px;margin:5px 0}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:12px 0}
+.stat{min-width:0;padding:9px 5px;text-align:center;background:linear-gradient(145deg,#1c1d26,#111218);border:1px solid var(--line);border-radius:12px}
+.stat small{display:block;color:var(--muted);font-size:10px;line-height:1.35}
+.stat strong{display:block;color:var(--gold);font-size:clamp(14px,3.8vw,21px);margin:5px 0;overflow-wrap:anywhere}
 .section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:19px 2px 10px}
 .section-title h2{font-size:15px;margin:0}
 .section-title span{font-size:11px;color:var(--muted)}
@@ -324,8 +324,10 @@ footer{color:#526078}
 </section>
 
 <div class="stats">
-<div class="stat"><small>የክሬዲት ቀሪ ሂሳብ</small><strong id="balance">—</strong><small>ከቦቱ ጋር ሲገናኝ ይታያል</small></div>
-<div class="stat"><small>የተጠሩ ቁጥሮች</small><strong id="calledCount">0 / 75</strong><small>የጨዋታ መረጃ</small></div>
+<div class="stat"><small>💰 ቀሪ ሂሳብ</small><strong id="balance">—</strong></div>
+<div class="stat"><small>👥 ተጫዋቾች</small><strong id="playerCount">0</strong></div>
+<div class="stat"><small>🔢 የተጠሩ</small><strong id="calledCount">0 / 75</strong></div>
+<div class="stat"><small>🏆 የድል ነጥብ</small><strong id="prizeCredits">100</strong></div>
 </div>
 
 <section id="selectionTimer" style="margin:16px 0;padding:16px;border:1px solid #f5c451;border-radius:14px;background:#15161b;text-align:center">
@@ -408,6 +410,8 @@ for(let row=0;row<15;row++){
  const tg=window.Telegram&&window.Telegram.WebApp;
  const pill=document.querySelector('.pill');
  const balanceEl=document.getElementById('balance');
+ const playerCountEl=document.getElementById('playerCount');
+ const prizeCreditsEl=document.getElementById('prizeCredits');
  const countEl=document.getElementById('calledCount');
  const buyBtn=document.getElementById('buyCard');
  const cardsBtn=document.getElementById('myCards');
@@ -509,6 +513,8 @@ for(let row=0;row<15;row++){
  async function refresh(){
   const [me,game]=await Promise.all([api('/api/me'),api('/api/game')]);
   balanceEl.textContent=me.balance;
+  if(playerCountEl)playerCountEl.textContent=game.player_count??0;
+  if(prizeCreditsEl)prizeCreditsEl.textContent=game.prize_credits??100;
   drawNumbers(game.called||[]);
   renderWinner(game);
 
