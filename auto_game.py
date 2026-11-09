@@ -8,7 +8,7 @@ from db import connect_db
 PRIZE_CREDITS = 100
 BUY_SECONDS = 30
 CALL_SECONDS = 3
-NEXT_ROUND_SECONDS = 30
+NEXT_ROUND_SECONDS = 3
 
 
 def as_list(value):
@@ -122,7 +122,7 @@ async def finish_round(context, round_id, winner=None):
     await broadcast(context, message)
     context.job_queue.run_once(
         start_round,
-        NEXT_ROUND_SECONDS,
+        NEXT_ROUND_SECONDS if winner is not None else 0,
         name=f"bingo-next-{round_id}",
     )
 
