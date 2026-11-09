@@ -209,6 +209,12 @@ def main_keyboard():
                 callback_data="claim"
             )
         ],
+        [
+            InlineKeyboardButton(
+                "💬 አድሚንን አነጋግር",
+                url="tg://user?id=5850978599"
+            )
+        ],
     ])
 
 
