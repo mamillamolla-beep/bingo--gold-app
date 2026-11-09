@@ -7,7 +7,7 @@ from db import connect_db
 
 PRIZE_CREDITS = 100
 BUY_SECONDS = 30
-CALL_SECONDS = 5
+CALL_SECONDS = 3
 NEXT_ROUND_SECONDS = 30
 
 
