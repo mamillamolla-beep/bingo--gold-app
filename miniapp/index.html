@@ -16,10 +16,10 @@ header{display:flex;align-items:center;justify-content:space-between;gap:8px;mar
 .eyebrow{color:var(--gold);font-size:11px;font-weight:900;letter-spacing:2px}
 h1{font-size:clamp(21px,5vw,32px);margin:8px 0}
 .sub{color:var(--muted);font-size:13px;line-height:1.7}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:12px 0}
-.stat{min-width:0;padding:9px 5px;text-align:center;background:linear-gradient(145deg,#1c1d26,#111218);border:1px solid var(--line);border-radius:12px}
-.stat small{display:block;color:var(--muted);font-size:10px;line-height:1.35}
-.stat strong{display:block;color:var(--gold);font-size:clamp(14px,3.8vw,21px);margin:5px 0;overflow-wrap:anywhere}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;gap:4px;margin:10px 0}
+.stat{min-width:0;padding:7px 2px;text-align:center;background:linear-gradient(145deg,#1c1d26,#111218);border:1px solid var(--line);border-radius:12px}
+.stat small{display:block;color:var(--muted);font-size:clamp(8px,2.3vw,10px);line-height:1.25;overflow-wrap:anywhere}
+.stat strong{display:block;color:var(--gold);font-size:clamp(12px,3.4vw,18px);margin:4px 0;overflow-wrap:anywhere}
 .section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:19px 2px 10px}
 .section-title h2{font-size:15px;margin:0}
 .section-title span{font-size:11px;color:var(--muted)}
@@ -74,9 +74,10 @@ footer{text-align:center;color:#858795;font-size:11px;margin-top:25px}
  .hero{padding:12px 10px;border-radius:14px}
  h1{font-size:20px}
  .sub{font-size:11px}
- .stats{gap:6px;margin:8px 0}
- .stat{padding:8px}
- .stat strong{font-size:20px}
+ .stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;margin:8px 0}
+ .stat{padding:6px 1px;border-radius:9px}
+ .stat small{font-size:8px}
+ .stat strong{font-size:clamp(11px,3.2vw,15px);margin:3px 0}
  .game-layout{grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr) minmax(0,1fr);gap:5px}
  .game-panel .panel{padding:4px}
  .cards-column .section-title{margin-top:10px}
