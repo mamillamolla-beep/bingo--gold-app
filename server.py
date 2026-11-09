@@ -105,7 +105,8 @@ def game_state():
 
     with connect_db() as db:
         row = db.execute(
-            'SELECT id, active, called, winner_id, buy_until '
+            'SELECT id, active, called, winner_id, buy_until, '
+            'winner_card_id, winner_card_code, winner_card '
             'FROM rounds ORDER BY id DESC LIMIT 1'
         ).fetchone()
 
@@ -141,6 +142,9 @@ def game_state():
         called=called,
         winner_id=row['winner_id'],
         winner_name=winner_name,
+        winner_card_id=row['winner_card_id'],
+        winner_card_code=row['winner_card_code'],
+        winner_card=decode_json(row['winner_card'], []),
         buy_until=row['buy_until'],
         selection_seconds=max(0, int(row['buy_until'] - time.time()))
             if row['buy_until'] is not None and row['active'] else 0

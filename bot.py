@@ -69,6 +69,10 @@ def setup_db():
             )
         """)
 
+        db.execute("ALTER TABLE rounds ADD COLUMN IF NOT EXISTS winner_card_id BIGINT")
+        db.execute("ALTER TABLE rounds ADD COLUMN IF NOT EXISTS winner_card_code TEXT")
+        db.execute("ALTER TABLE rounds ADD COLUMN IF NOT EXISTS winner_card JSONB")
+
         db.execute("""
             INSERT INTO rounds (active)
             SELECT FALSE

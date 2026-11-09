@@ -346,6 +346,17 @@ footer{color:#526078}
 
 <div class="section-title"><h2>የቁጥር ሰሌዳ</h2><span>B • I • N • G • O</span></div>
 
+
+<section id="winnerScreen" style="display:none;text-align:center;padding:22px;margin:18px 0;background:linear-gradient(145deg,#29200d,#111218);border:2px solid #f4c44e;border-radius:20px;box-shadow:0 0 25px #f4c44e44">
+  <div style="font-size:42px">🏆</div>
+  <h2 style="color:#f4c44e;font-size:25px;margin:8px 0">BINGO GOLD WINNER!</h2>
+  <div id="winnerName" style="font-size:23px;font-weight:900;color:#fff;margin:10px"></div>
+  <div id="winnerCode" style="color:#f4c44e;font-weight:800;margin:8px"></div>
+  <div style="color:#bbb;font-size:13px;margin:14px 0 8px">የአሸናፊው ሙሉ ካርድ</div>
+  <div id="winnerCard" style="max-width:360px;margin:auto"></div>
+  <div style="color:#f4c44e;margin-top:16px">⏳ ቀጣይ ዙር በ30 ሰከንድ ይጀምራል</div>
+</section>
+
 <div class="game-layout">
 <section class="game-panel">
 <div class="panel">
@@ -444,10 +455,62 @@ for(let row=0;row<15;row++){
   if(displayedCards.length)showCards(displayedCards);
  }
 
+ function renderWinner(game){
+  const screen=document.getElementById('winnerScreen');
+  const name=document.getElementById('winnerName');
+  const code=document.getElementById('winnerCode');
+  const cardBox=document.getElementById('winnerCard');
+  if(!screen)return;
+
+  if(!game.winner_id || game.active){
+   screen.style.display='none';
+   return;
+  }
+
+  screen.style.display='block';
+  name.textContent=game.winner_name||'Player';
+  code.textContent='🎟️ '+(game.winner_card_code||'የካርድ ኮድ የለም');
+  cardBox.replaceChildren();
+
+  const numbers=game.winner_card||[];
+  if(!Array.isArray(numbers)||numbers.length!==5){
+   cardBox.textContent='የካርድ መረጃ አልተገኘም።';
+   return;
+  }
+
+  const table=document.createElement('table');
+  table.style.cssText='width:100%;table-layout:fixed;border-spacing:4px;color:#fff';
+  const head=document.createElement('tr');
+  for(const letter of ['B','I','N','G','O']){
+   const th=document.createElement('th');
+   th.textContent=letter;
+   th.style.cssText='color:#f4c44e;padding:7px 0';
+   head.appendChild(th);
+  }
+  table.appendChild(head);
+
+  for(const row of numbers){
+   const tr=document.createElement('tr');
+   for(const value of row){
+    const td=document.createElement('td');
+    td.textContent=(value===0||value==='0')?'★':String(value);
+    td.style.cssText='background:#302817;border:1px solid #80652c;border-radius:7px;padding:10px 2px;font-weight:900;font-size:clamp(12px,3vw,20px)';
+    if(value===0||value==='0'){
+     td.style.background='#f4c44e';
+     td.style.color='#211705';
+    }
+    tr.appendChild(td);
+   }
+   table.appendChild(tr);
+  }
+  cardBox.appendChild(table);
+ }
+
  async function refresh(){
   const [me,game]=await Promise.all([api('/api/me'),api('/api/game')]);
   balanceEl.textContent=me.balance;
   drawNumbers(game.called||[]);
+  renderWinner(game);
 
   const timerSeconds=document.getElementById('timerSeconds');
   const timerMessage=document.getElementById('timerMessage');
@@ -465,11 +528,12 @@ for(let row=0;row<15;row++){
   const timerSection=document.getElementById('selectionTimer');
   const poolSection=document.getElementById('cardPoolSection');
   const gameLayout=document.querySelector('.game-layout');
+  const winnerVisible=!!game.winner_id&&!game.active;
   const gameStarted=game.active && remaining<=0;
 
-  if(gameLayout) gameLayout.style.display=gameStarted?'grid':'none';
-  if(timerSection) timerSection.style.display=gameStarted?'none':'block';
-  if(poolSection) poolSection.style.display=gameStarted?'none':'block';
+  if(gameLayout) gameLayout.style.display=winnerVisible?'none':(gameStarted?'grid':'none');
+  if(timerSection) timerSection.style.display=winnerVisible?'none':(gameStarted?'none':'block');
+  if(poolSection) poolSection.style.display=winnerVisible?'none':(gameStarted?'none':'block');
 
   if(timerSeconds && timerMessage){
    if(game.active && remaining>0){
@@ -488,7 +552,7 @@ for(let row=0;row<15;row++){
   }
 
   if(game.winner_id)pill.textContent='🏆 WINNER: '+(game.winner_name||'Player');
-  else if(game.active)pill.textContent='🟢 GAME LIVE';
+  else if(game.active)pill.textContent=' 🟢 GAME LIVE';
   else pill.textContent='⏳ WAITING';
  }
 

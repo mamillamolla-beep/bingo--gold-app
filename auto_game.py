@@ -39,14 +39,28 @@ def has_bingo(card, called):
 def find_winner(db, game):
     called = set(as_list(game["called"]))
     cards = db.execute(
-        "SELECT user_id, numbers FROM cards WHERE round_id = %s ORDER BY id",
+        """
+        SELECT c.id AS card_id, c.user_id, c.numbers, p.code
+        FROM cards c
+        LEFT JOIN card_pool p
+          ON p.round_id = c.round_id
+         AND p.user_id = c.user_id
+         AND p.numbers = c.numbers
+        WHERE c.round_id = %s
+        ORDER BY c.id
+        """,
         (game["id"],),
     ).fetchall()
 
     for item in cards:
         card = as_list(item["numbers"])
         if has_bingo(card, called):
-            return item["user_id"]
+            return {
+                "user_id": item["user_id"],
+                "card_id": item["card_id"],
+                "code": item["code"],
+                "numbers": card,
+            }
     return None
 
 
@@ -65,24 +79,39 @@ async def broadcast(context, message):
             pass
 
 
-async def finish_round(context, round_id, winner_id=None):
+async def finish_round(context, round_id, winner=None):
+    winner_id = winner["user_id"] if winner else None
+
     with connect_db() as db:
         changed = db.execute(
-            "UPDATE rounds SET active = FALSE, winner_id = %s "
-            "WHERE id = %s AND active = TRUE AND winner_id IS NULL",
-            (winner_id, round_id),
+            """
+            UPDATE rounds
+            SET active = FALSE,
+                winner_id = %s,
+                winner_card_id = %s,
+                winner_card_code = %s,
+                winner_card = %s::jsonb
+            WHERE id = %s AND active = TRUE AND winner_id IS NULL
+            """,
+            (
+                winner_id,
+                winner["card_id"] if winner else None,
+                winner["code"] if winner else None,
+                json.dumps(winner["numbers"]) if winner else None,
+                round_id,
+            ),
         ).rowcount
 
         if changed != 1:
             return
 
-        if winner_id is not None:
+        if winner is not None:
             db.execute(
                 "UPDATE users SET balance = balance + %s WHERE user_id = %s",
                 (PRIZE_CREDITS, winner_id),
             )
 
-    if winner_id is not None:
+    if winner is not None:
         with connect_db() as db:
             user = db.execute(
                 "SELECT username FROM users WHERE user_id = %s",
@@ -92,6 +121,7 @@ async def finish_round(context, round_id, winner_id=None):
         name = user["username"] if user and user["username"] else str(winner_id)
         message = (
             f"🏆 BINGO GOLD!\nአሸናፊ: {name}\n"
+            f"🎟️ የካርድ ቁጥር: {winner['code'] or 'N/A'}\n"
             f"🎁 ሽልማት: {PRIZE_CREDITS} ክሬዲት\n"
             f"⏳ ቀጣይ ዙር በ{NEXT_ROUND_SECONDS} ሰከንድ ይጀምራል።"
         )
@@ -171,9 +201,9 @@ async def call_tick(context: ContextTypes.DEFAULT_TYPE):
             reschedule = True
         else:
             reschedule = False
-            winner_id = find_winner(db, game)
+            winner = find_winner(db, game)
 
-            if winner_id is not None:
+            if winner is not None:
                 called = set(as_list(game["called"]))
                 number = None
             else:
@@ -200,8 +230,8 @@ async def call_tick(context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    if winner_id is not None:
-        await finish_round(context, round_id, winner_id)
+    if winner is not None:
+        await finish_round(context, round_id, winner)
         return
 
     if number is None:
@@ -222,10 +252,10 @@ async def call_tick(context: ContextTypes.DEFAULT_TYPE):
             "SELECT * FROM rounds WHERE id = %s",
             (round_id,),
         ).fetchone()
-        winner_id = find_winner(db, game) if game and game["active"] else None
+        winner = find_winner(db, game) if game and game["active"] else None
 
-    if winner_id is not None:
-        await finish_round(context, round_id, winner_id)
+    if winner is not None:
+        await finish_round(context, round_id, winner)
     elif len(called) >= 75:
         await finish_round(context, round_id)
     else:
