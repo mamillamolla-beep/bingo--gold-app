@@ -60,7 +60,7 @@ def ensure_card_pool(db, round_id):
     if count:
         return
 
-    for number in range(1, 51):
+    for number in range(1, 501):
         code = f"BG-{number:03d}"
         db.execute(
             "INSERT INTO card_pool (round_id, code, numbers) VALUES (%s, %s, %s::jsonb)",
